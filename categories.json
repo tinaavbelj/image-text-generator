@@ -1,0 +1,171 @@
+[
+  {
+    "name": "adventure",
+    "id": 5,
+    "color": "olive",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "mountain",
+      "cave",
+      "nature",
+      "lake",
+      "adventure",
+      "explore",
+      "forest",
+      "trail"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "mountains slovenia",
+      "forest",
+      "kocevski rog",
+      "triglavski narodni park",
+      "postojnska jama",
+      "adrenalinski park",
+      "bohinj"
+    ]
+  },
+  {
+    "name": "cultural",
+    "id": 2,
+    "color": "green",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "museum",
+      "art",
+      "gallery",
+      "culture",
+      "cultural heritage",
+      "history",
+      "castle"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "muzej",
+      "kulturna dediscina",
+      "park vojaske zgodovine pivka",
+      "prirodoslovni muzej",
+      "narodna galerija",
+      "galerija",
+      "predjamski grad"
+    ]
+  },
+  {
+    "name": "leisure",
+    "id": 7,
+    "color": "pink",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "street",
+      "shopping",
+      "coffee",
+      "sightseeing",
+      "seaside",
+      "food",
+      "restaurant",
+      "festival",
+      "movie",
+      "ecotourism"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "ljubljana",
+      "ptuj",
+      "piran",
+      "koper",
+      "celje",
+      "kavarna ljubljana",
+      "izola",
+      "slovenian food"
+    ]
+  },
+  {
+    "name": "health or medical",
+    "id:": 6,
+    "color": "blue",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "spa",
+      "thermal",
+      "health",
+      "wellness"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "dolenjske toplice",
+      "lepa vida spa",
+      "terme catez",
+      "terme dobrna",
+      "terme 3000",
+      "terme lendava",
+      "lifeclass portoroz",
+      "terme olimia"
+    ]
+  },
+  {
+    "name": "religious",
+    "id": 4,
+    "color": "purple",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "church",
+      "faith",
+      "monastery"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "church",
+      "cerkev",
+      "brezje",
+      "freska",
+      "monastery slovenia",
+      "Frančiškanska cerkev"
+    ]
+  },
+  {
+    "name": "sport and recreation",
+    "id": 1,
+    "color": "orange",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "biking",
+      "mountain biking",
+      "hiking",
+      "canoe",
+      "climbing"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "biking",
+      "mountain biking",
+      "hiking",
+      "canoe",
+      "climbing",
+      "kayak",
+      "mountains",
+      "rafting bovec"
+    ]
+  },
+  {
+    "name": "business",
+    "id:": 3,
+    "color": "gold",
+    "number_of_generated_providers": 20,
+    "text_keywords": [
+      "business",
+      "conference",
+      "meeting",
+      "work",
+      "corporate"
+    ],
+    "text_additional_words": [],
+    "images_keywords": [
+      "business travel",
+      "conference",
+      "meeting",
+      "conference room",
+      "trade fair",
+      "konferenca"
+    ]
+  }
+]
