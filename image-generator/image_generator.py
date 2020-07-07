@@ -3,8 +3,7 @@ from collage_maker import make_collage
 import random
 import json
 from utils import load_image
-from utils import calculate_features
-import pickle
+from utils import get_features
 from sklearn.metrics import silhouette_samples
 from sklearn.cluster import KMeans
 from shutil import copyfile
@@ -59,7 +58,7 @@ class ImageGenerator:
         self.features_original_images, paths to selected images to self.paths_original_images, categories to
         self.categories_original_images
         """
-        print('Select best original images\n')
+        print('Select the best original images\n')
         data_all = []
         labels = []
 
@@ -77,13 +76,7 @@ class ImageGenerator:
                                    os.listdir(self.data_directory + '/' + category)]
             labels = labels + [category for _ in os.listdir(self.data_directory + '/' + category)]
 
-        if not os.path.exists(self.features_original_images_file):
-            features = calculate_features(data_all)
-            with open(self.features_original_images_file, 'wb') as f:
-                pickle.dump(features, f)
-        else:
-            with open(self.features_original_images_file, 'rb') as f:
-                features = pickle.load(f)
+        features = get_features(self.features_original_images_file, data_all)
 
         print('\nCalculate silhouette scores\n')
         scores = silhouette_samples(features, labels)
@@ -106,8 +99,8 @@ class ImageGenerator:
             sorted_scores_indexes = [r for _, r in
                                      sorted(zip(category_scores, [i for i in range(len(category_scores))]))]
 
-            # Keep best 60 images for each category
-            best_indexes = sorted_scores_indexes[-60:]
+            # Keep best 50 images for each category
+            best_indexes = sorted_scores_indexes[-50:]
             self.features_original_images[category] = features[best_indexes, :]
             self.paths_original_images[category] = [path for index, path in enumerate(category_paths) if index in best_indexes]
 
@@ -121,7 +114,6 @@ class ImageGenerator:
         return n
 
     def generate_collage_images(self):
-    #def generate(self, number_of_images, number_of_images_in_collage, noise_ratio, output_directory):
         """
         Generate collage images and save them to output_directory
         """
@@ -178,13 +170,7 @@ class ImageGenerator:
         images_paths = [self.tmp_output_directory + '/' + name for name in file_names]
         images_categories = [name.split('-')[0] for name in file_names]
 
-        if not os.path.exists(features_file):
-            features = calculate_features(images_paths)
-            with open(features_file, 'wb') as f:
-                pickle.dump(features, f)
-        else:
-            with open(features_file, 'rb') as f:
-                features = pickle.load(f)
+        features = get_features(features_file, images_paths)
 
         # Find cluster of images for each rating and keep best images for each category and rating
         best_images = {}

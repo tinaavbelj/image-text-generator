@@ -3,6 +3,7 @@ import os
 from image_loader import ImageLoader
 from image_generator import ImageGenerator
 from evaluator import Evaluator
+from load_data import load_experience_data
 
 
 def main():
@@ -90,18 +91,21 @@ def main():
         }
     }
 
+    experience_file = './data/experience.csv'
+    number_of_experiences, ids_for_categories = load_experience_data(experience_file, n_ratings=2)
+
     number_of_true_images_for_provider = 6
     number_of_noise_images_for_provider = 0
     number_of_images_in_collage = 6
-    output_directory = './data/generated-data'
+    output_directory = './data/generated-data-2-ratings-0-noise'
     features_original_images_file = './data/images/features-images-1'
 
     #image_generator = ImageGenerator(images_directory, categories_file, features_original_images_file)
-    #image_generator.generate(number_of_true_images_for_provider, number_of_noise_images_for_provider, number_of_images, ids, number_of_images_in_collage, output_directory)
+    #image_generator.generate(number_of_true_images_for_provider=number_of_true_images_for_provider, number_of_noise_images_for_provider=number_of_noise_images_for_provider, number_of_images=number_of_experiences, ids=ids_for_categories, number_of_images_in_collage=number_of_images_in_collage, output_directory=output_directory)
 
-    evaluator = Evaluator(output_directory)
-    evaluator.visualize(show='ratings')
-    #evaluator.classify(algorithm='knn')
+    evaluator = Evaluator(output_directory, features_file='./data/features-generated-data-2-ratings-0-noise')
+    #evaluator.visualize(show='ratings')
+    evaluator.classify()
 
 
 if __name__ == '__main__':
