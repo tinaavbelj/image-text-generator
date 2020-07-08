@@ -7,6 +7,13 @@ from utils import get_features
 from sklearn.metrics import silhouette_samples
 from sklearn.cluster import KMeans
 from shutil import copyfile
+from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+
+
+COLORS_RATINGS = {1: 'yellow', 2: 'orange', 3: 'red'}
+COLORS_CATEGORIES = {'leisure': 'yellow', 'adventure': 'red', 'religious': 'green', 'business': 'blue', 'sport and recreation': 'pink', 'health or medical': 'purple', 'cultural': 'coral'}
 
 
 def flatten_list(x):
@@ -51,6 +58,11 @@ class ImageGenerator:
         categories = self.categories.copy()
         categories.remove(category)
         return categories
+
+    def get_other_ratings(self, rating):
+        ratings = self.ratings.copy()
+        ratings.remove(rating)
+        return ratings
 
     def select_best_original_images(self):
         """
@@ -99,9 +111,14 @@ class ImageGenerator:
             sorted_scores_indexes = [r for _, r in
                                      sorted(zip(category_scores, [i for i in range(len(category_scores))]))]
 
+            #sorted_scores_indexes = [r for _, r in
+            #                         sorted(zip(category_scores, [i for i in category_indexes]))]
+
             # Keep best 50 images for each category
             best_indexes = sorted_scores_indexes[-50:]
-            self.features_original_images[category] = features[best_indexes, :]
+            best_indexes_general = [value for i, value in enumerate(category_indexes) if i in best_indexes]
+            self.features_original_images[category] = features[best_indexes_general, :]
+            #self.features_original_images[category] = features[best_indexes, :]
             self.paths_original_images[category] = [path for index, path in enumerate(category_paths) if index in best_indexes]
 
     def get_number_of_other_providers(self, category):
@@ -148,7 +165,7 @@ class ImageGenerator:
             other_n = self.get_number_of_other_providers(category)
             for rating in self.ratings:
                 # Generate more images to later keep only the ones with the best silhouette score
-                for i in range(self.number_of_images[category][rating] * (self.number_of_true_images_for_provider + other_n)): # +len(self.ratings)
+                for i in range(self.number_of_images[category][rating] * (self.number_of_true_images_for_provider + round(other_n / 2))):
                     output_path = f'{output_directory}/{category}-{rating}-{i}.png'
                     n_images = self.number_of_images_in_collage if len(images_indexes[rating]) >= self.number_of_images_in_collage else len(images_indexes[rating])
                     selected_images_indexes = random.sample(images_indexes[rating], k=n_images)
@@ -164,13 +181,16 @@ class ImageGenerator:
             os.makedirs(self.output_directory)
         else:
             print('\nOutput directory already exists\n')
-            return
+            #return
         features_file = './data/features-tmp'
         file_names = os.listdir(self.tmp_output_directory)
         images_paths = [self.tmp_output_directory + '/' + name for name in file_names]
         images_categories = [name.split('-')[0] for name in file_names]
+        ratings = [name.split('.')[0].split('-')[1] for name in file_names]
 
         features = get_features(features_file, images_paths)
+
+        #self.draw(features, ratings, images_categories)
 
         # Find cluster of images for each rating and keep best images for each category and rating
         best_images = {}
@@ -194,7 +214,6 @@ class ImageGenerator:
 
             # Keep best images for each category and rating
             best_images[current_category] = {}
-            other_n = self.get_number_of_other_providers(category)
             for r in list(self.number_of_images[category].keys()):
                 scores_for_rating = []
                 indexes_for_rating = []
@@ -205,14 +224,15 @@ class ImageGenerator:
                 sorted_scores_indexes = [r for _, r in sorted(zip(scores_for_rating, [i for i in range(len(scores_for_rating))]))]
                 n = self.number_of_images[current_category][r] * self.number_of_true_images_for_provider
                 best_indexes = sorted_scores_indexes[-n:]
-                best_images[current_category][r] = [path for index, path in enumerate(selected_images_paths) if index in best_indexes]
+                best_indexes_general = [value for i, value in enumerate(indexes_for_rating) if i in best_indexes]
+                best_images[current_category][r] = [path for index, path in enumerate(selected_images_paths) if index in best_indexes_general]
 
         # Select images for each provider
         new_provider_id = 1
         for current_category in self.categories:
-            other_categories = self.get_other_categories(category)
+            other_categories = self.get_other_categories(current_category)
             for r in list(self.number_of_images[current_category].keys()):
-
+                other_ratings = self.get_other_ratings(r)
                 # Create providers for current category and rating
                 next_id_index = 0
                 for i in range(self.number_of_images[current_category][r]):
@@ -221,7 +241,8 @@ class ImageGenerator:
 
                     # Select noise images
                     other_category = random.choice(other_categories)
-                    noise_selected_images = random.sample(best_images[other_category][r], k=self.number_of_noise_images_for_provider)
+                    other_rating = random.choice(other_ratings)
+                    noise_selected_images = random.sample(best_images[other_category][other_rating], k=self.number_of_noise_images_for_provider)
 
                     all_selected_images = true_selected_images + noise_selected_images
 
@@ -238,6 +259,36 @@ class ImageGenerator:
                         new_file = f"{self.output_directory}/{provider_id}-{current_category}-{r}-{image_index}.png"
                         old_file = image
                         copyfile(old_file, new_file)
+
+    def draw(self, features, ratings, categories):
+        tsne = TSNE(n_components=2)
+        components = tsne.fit_transform(features)
+
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_title('Kategorije', fontsize=12)
+
+        colors = COLORS_CATEGORIES
+        for index, point in enumerate(components):
+            color = colors[categories[index]]
+            ax.plot(point[0], point[1], marker='o', markersize=3, color=color)
+        ax.grid()
+        custom_lines = [Line2D([0], [0], color=value, lw=4) for value in colors.values()]
+        ax.legend(custom_lines, colors.keys())
+        plt.show()
+
+        fig = plt.figure(figsize=(8, 8))
+        ax = fig.add_subplot(1, 1, 1)
+        ax.set_title('Ocene', fontsize=12)
+
+        colors = COLORS_RATINGS
+        for index, point in enumerate(components):
+            color = colors[ratings[index]]
+            ax.plot(point[0], point[1], marker='o', markersize=3, color=color)
+        ax.grid()
+        custom_lines = [Line2D([0], [0], color=value, lw=4) for value in colors.values()]
+        ax.legend(custom_lines, colors.keys())
+        plt.show()
 
     def generate(self, number_of_true_images_for_provider, number_of_noise_images_for_provider, number_of_images, ids, number_of_images_in_collage, output_directory):
         """
