@@ -111,14 +111,10 @@ class ImageGenerator:
             sorted_scores_indexes = [r for _, r in
                                      sorted(zip(category_scores, [i for i in range(len(category_scores))]))]
 
-            #sorted_scores_indexes = [r for _, r in
-            #                         sorted(zip(category_scores, [i for i in category_indexes]))]
-
             # Keep best 50 images for each category
             best_indexes = sorted_scores_indexes[-50:]
             best_indexes_general = [value for i, value in enumerate(category_indexes) if i in best_indexes]
             self.features_original_images[category] = features[best_indexes_general, :]
-            #self.features_original_images[category] = features[best_indexes, :]
             self.paths_original_images[category] = [path for index, path in enumerate(category_paths) if index in best_indexes]
 
     def get_number_of_other_providers(self, category):
@@ -186,11 +182,8 @@ class ImageGenerator:
         file_names = os.listdir(self.tmp_output_directory)
         images_paths = [self.tmp_output_directory + '/' + name for name in file_names]
         images_categories = [name.split('-')[0] for name in file_names]
-        ratings = [name.split('.')[0].split('-')[1] for name in file_names]
 
         features = get_features(features_file, images_paths)
-
-        #self.draw(features, ratings, images_categories)
 
         # Find cluster of images for each rating and keep best images for each category and rating
         best_images = {}

@@ -16,7 +16,7 @@ def main():
         loader.load()
 
     experience_file = './data/experience.csv'
-    number_of_experiences, ids_for_categories = load_experience_data(experience_file, n_ratings=2)
+    number_of_experiences, ids_for_categories = load_experience_data(experience_file, n_ratings=3)
 
     number_of_true_images_for_provider = 3
     number_of_noise_images_for_provider = 3
