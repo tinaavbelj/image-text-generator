@@ -17,6 +17,8 @@ def load_experience_data(experience_file, n_ratings=10):
         define_new_ratings = True
         original_n_ratings = len(unique_ratings)
         unique_ratings = [i + 1 for i in range(n_ratings)]
+    else:
+        thresholds = unique_ratings
 
     ids_for_categories = {}
     number_of_experiences = {}

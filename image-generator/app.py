@@ -15,11 +15,11 @@ def main():
         loader = ImageLoader(output_directory=images_directory, categories_file=categories_file)
         loader.load()
 
-    experience_file = './data/experience.csv'
-    number_of_experiences, ids_for_categories = load_experience_data(experience_file, n_ratings=3)
+    experience_file = './data/experience-new-ratings.csv'
+    number_of_experiences, ids_for_categories = load_experience_data(experience_file, n_ratings=2)
 
-    number_of_true_images_for_provider = 3
-    number_of_noise_images_for_provider = 3
+    number_of_true_images_for_provider = 8
+    number_of_noise_images_for_provider = 2
     number_of_images_in_collage = 6
     output_directory = './data/generated-data'
     features_original_images_file = './data/images/features-images-1'
